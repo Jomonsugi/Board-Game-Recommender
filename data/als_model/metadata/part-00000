@@ -1,0 +1,1 @@
+{"class":"org.apache.spark.ml.recommendation.ALSModel","timestamp":1497388809158,"sparkVersion":"2.1.0","uid":"ALS_4a289ac2e8ecd9c0b60a","paramMap":{"userCol":"user_id","itemCol":"game_id","predictionCol":"prediction"},"rank":5}

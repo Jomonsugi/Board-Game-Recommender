@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://use.fontawesome.com/8f66eee967.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Jumbotron Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../../static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../static/css/jumbotron.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../static/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Looking to find a board game...</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Board Game Recommender</h1>
+        <p>This is an app that gives board game recommendations to current
+          <a href="https://boardgamegeek.com/">Board Game Geek</a> members. If you are not a member or want a different kind of recommendation, you're favorite game will work as well!</p>
+        <p><a class="btn btn-primary btn-lg" href="#learn_more" role="button">Learn more &raquo;</a></p>
+      </div>
+    </div>
+
+
+    <div class="container" href="#recs">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-6">
+          <h2>BGG Members</h2>
+          <p>If you are a member of BGG and have rated a game before, please enter your username below. </p>
+            <div class="form-group col-md-8">
+              <form action='/user_rec' method='POST' id='submitform'>
+                <input type='text', placeholder='BGG User Id'  name='user_input'>
+                <button type="submit" class="btn btn-success">Recommend</button>
+                <br><br>
+                <h2>Other Options</h2>
+                <h5>Best Number of Players</h5>
+                <div class="checkbox">
+                  <label><input type="checkbox" name="check" value="Any">Any</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name="check" value="1">1</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name="check" value="2">2</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name="check" value="3">3</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name="check" value="4">4</label>
+                </div>
+                <div class="checkbox">
+                  <label><input type="checkbox" name="check" value="5">5+</label>
+                </div>
+                <h5>Minimum Play Time (minutes)</h5>
+                <input type="text", placeholder='0'  name='min_time'>
+                <br><br>
+                <h5>Maximum Play Time (minutes)</h5>
+                <input type="text", placeholder='500000'  name='max_time'>
+              </form>
+            </div>
+        </div>
+
+      <div class="col-md-6">
+        <h2>Another way...</h2>
+        <p>If you haven't rated any games on BGG, or if you'd like to check out a different type of recomendation, try entering a board game you like playing below! </p>
+        <div class="form-group col-md-8">
+          <form action='/boardgame_rec' method='POST' id='submitform'>
+            <input type='text', placeholder='Board Game'  name='user_input'>
+            <button type="submit" class="btn btn-success">Recommend</button>
+            <br><br>
+            <h2>Other Options</h2>
+            <h5>Best Number of Players</h5>
+            <div class="checkbox">
+              <label><input type="checkbox" name="check" value="Any">Any</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="check" value="1">1</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="check" value="2">2</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="check" value="3">3</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="check" value="4">4</label>
+            </div>
+            <div class="checkbox">
+              <label><input type="checkbox" name="check" value="5">5+</label>
+            </div>
+            <h5>Minimum Play Time (minutes)</h5>
+            <input type="text", placeholder='0'  name='min_time'>
+            <br><br>
+            <h5>Maximum Play Time (minutes)</h5>
+            <input type="text", placeholder='500000'  name='max_time'>
+          </form>
+        </div>
+    </div>
+    </div>
+
+    <br><br>
+    <br><br>
+    <br><br>
+    <section id="learn_more"
+    <hr class="featurette-divider">
+    <br><br>
+
+    <div class="row featurette">
+      <div class="col-md-9">
+        <h2 class="featurette-heading">Recommendation Systems  <span class="text-muted">An Overview</span></h2>
+        <p class="lead">This app provides two different types of recommendation systems. </p>
+        <h4>Collaborative </h4>
+        <p>This type is used in the section labeled "BGG Members". This approach finds other users with similar preferences (based on ratings) using the matrix factorization method called Alternative Least Squares. An optimized model then predicts what you would rate games you have not rated before, then outputs a filtered list with those rated the most highly. Further, the descriptions of all the games are transformed using natural language processing techniques, and then through nonnegative matrix factorization, games are segmented into categories. The top games in the list are then slightly modified to be diversified across these categories. This approach gives you a currated list of twenty games that you should definitely check out if you have not before! Notice you have control over filtering your list a bit further. Options include: "Best Number of Players" (as voted by BGG members), "Minimum Play Time (minutes)" for those of you who like a longer game, and "Maximum Play Time (minutes)" if you happen to be in a time crunch (or just destest long games).</p>
+        <br><br>
+        <h4>Knowledge-based </h4>
+        <p>If you are not a BGG member that has actively rated games on the site or you just want to try a different type of recommendation out, there is a section labeled "Another way..." above. This is a simpler method, but still a powerful one. Board Game Geek classifies games as belonging to a variety of "Mechanics" and "Categories". There are currently 51 mechanics and 80 categories used to segment games on the BGG site. Games are classified into multiple mechanics and categories. Using these combinations, a hamming distance matrix is derrived, which in turn can be used to find games that are "closest" to each other. If you type in "Pandemic Legacy Season 1" into this recommendation engine, you will notice your list has a lot of Pandemic variations on it! That is because they share many of the same attributes. However, there will be plenty of other games on the list and more unique games might return more interesting results. The same user specified options available to the collaborative recommender are available here as well.
+        <br><br>
+        <br><br>
+        <h4>Detailed Information </h4>
+        This project began while I was a data science student at a place called
+        <a href="https://www.galvanize.com/denver-platte">Galvanize</a>. If you would like to dig in a bit more, the <a href="https://github.com/Jomonsugi/bgg-exploration/#readme">readme</a> section of my github repo has more detailed information. If you have any further questions, please do not hesitate to contact me.
+        <br><br>
+      </div>
+      </div>
+
+      <hr>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../static/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../staic/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../static/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
