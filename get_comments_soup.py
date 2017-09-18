@@ -29,75 +29,79 @@ def get_ratings_comments_results(ratings_coll):
                 print(soup)
                 print("NAME:")
                 print(name)
-            print(current_game)
-            ratings = soup.findAll("comments")
-            # l = comment.findAll('comment')
-            for entry in ratings:
-                entry = entry
-            tags = entry.findAll("comment")
-            if tags:
-                for tag in tags:
-                    try:
-                        rating = tag['rating']
-                        print(rating)
-                        if len(rating) == 0:
-                            rating = None
-                    except:
-                        rating = None
-                    try:
-                        username = tag['username']
-                        print(username)
-                        if len(username) == 0:
-                            username == None
-                    except:
-                        username == None
-                    try:
-                        comment = tag['value']
-                        print(comment)
-                        if len(comment) == 0:
-                            comment = None
-                    except:
-                        comment = None
-                    if username in user_dict:
-                        user_id = user_dict.get(username)
-                        print("from dictionary:",user_id)
-                    else:
+            if current_game in mongo_games:
+                print(current_game, " already in database")
+                continue
+            else:
+                print(current_game)
+                ratings = soup.findAll("comments")
+                # l = comment.findAll('comment')
+                for entry in ratings:
+                    entry = entry
+                tags = entry.findAll("comment")
+                if tags:
+                    for tag in tags:
                         try:
-                            r2 = requests.get("https://www.boardgamegeek.com/xmlapi2/user?name="+username)
-                            soup = BeautifulSoup(r2.text, "xml")
-                            user_id = soup.findAll('user')[0]["id"]
-                            user_dict[username]=user_id
-                            print("from api:",user_id)
-                            time.sleep(np.random.choice(random_sec))
+                            rating = tag['rating']
+                            print(rating)
+                            if len(rating) == 0:
+                                rating = None
                         except:
+                            rating = None
+                        try:
+                            username = tag['username']
+                            print(username)
+                            if len(username) == 0:
+                                username == None
+                        except:
+                            username == None
+                        try:
+                            comment = tag['value']
+                            print(comment)
+                            if len(comment) == 0:
+                                comment = None
+                        except:
+                            comment = None
+                        if username in user_dict:
+                            user_id = user_dict.get(username)
+                            print("from dictionary:",user_id)
+                        else:
                             try:
-                                time.sleep(30)
                                 r2 = requests.get("https://www.boardgamegeek.com/xmlapi2/user?name="+username)
                                 soup = BeautifulSoup(r2.text, "xml")
                                 user_id = soup.findAll('user')[0]["id"]
                                 user_dict[username]=user_id
-                                time.sleep(np.random.choice(random_sec))
                                 print("from api:",user_id)
+                                time.sleep(np.random.choice(random_sec))
                             except:
-                                print("failed user id requests on:")
-                                print("page:", page)
-                                print("game:", current_game)
-                                raise ValueError('Error while calling API for user id')
+                                try:
+                                    time.sleep(30)
+                                    r2 = requests.get("https://www.boardgamegeek.com/xmlapi2/user?name="+username)
+                                    soup = BeautifulSoup(r2.text, "xml")
+                                    user_id = soup.findAll('user')[0]["id"]
+                                    user_dict[username]=user_id
+                                    time.sleep(np.random.choice(random_sec))
+                                    print("from api:",user_id)
+                                except:
+                                    print("failed user id requests on:")
+                                    print("page:", page)
+                                    print("game:", current_game)
+                                    raise ValueError('Error while calling API for user id')
 
-                    ratings_coll.insert({"game": current_game,
-                                    "game_id": str(game_id),
-                                    "user_id" : str(user_id),
-                                    "username": username,
-                                    "rating": float(rating),
-                                    "comment": comment})
+                        ratings_coll.insert({"game": current_game,
+                                        "game_id": str(game_id),
+                                        "user_id" : str(user_id),
+                                        "username": username,
+                                        "rating": float(rating),
+                                        "comment": comment})
 
-                page += 1
-                with open('user_dict_091617.pkl', 'wb') as fp:
-                    pickle.dump(user_dict, fp)
-            else:
-                with open('user_dict_091617.pkl', 'wb') as fp:
-                    pickle.dump(user_dict, fp)
-                page = None
+                    page += 1
+                    with open('user_dict_091617.pkl', 'wb') as fp:
+                        pickle.dump(user_dict, fp)
+                else:
+                    with open('user_dict_091617.pkl', 'wb') as fp:
+                        pickle.dump(user_dict, fp)
+                    page = None
 
 
 if __name__ == '__main__':
@@ -113,6 +117,8 @@ if __name__ == '__main__':
     database = client.bgg
     #collection for stats variables to go in
     ratings_coll = database.game_ratings
+    mongo_games = ratings_coll.distinct("games")
+    print("the current number of games in the database is", len(mongo_games))
 
     '''This range identifies the games that will be databased from the #id_game_lst. x[0] is the game id in id_game_lst. The index of id_game_lst will select that range of games that will be updated in the database'''
     call_id_lst = [x[0] for x in id_game_lst[995:1000]]
