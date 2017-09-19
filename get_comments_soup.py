@@ -5,6 +5,8 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
+new_entry = []
+old_entry = []
 def get_ratings_comments_results(ratings_coll):
     for game_id in call_id_lst:
         with open('user_dict_091617.pkl', 'rb') as fp:
@@ -31,9 +33,11 @@ def get_ratings_comments_results(ratings_coll):
                 print(name)
             if current_game in mongo_games:
                 print(current_game, " already in database")
-                continue
+                old_entry.append(current_game)
+                break
             else:
                 print(current_game)
+                new_entry.append(current_game)
                 ratings = soup.findAll("comments")
                 # l = comment.findAll('comment')
                 for entry in ratings:
@@ -102,7 +106,7 @@ def get_ratings_comments_results(ratings_coll):
                     with open('user_dict_091617.pkl', 'wb') as fp:
                         pickle.dump(user_dict, fp)
                     page = None
-
+    return new_entry, old_entry
 
 if __name__ == '__main__':
     random_sec = np.random.uniform(5,5.5,[10000,])
@@ -117,9 +121,9 @@ if __name__ == '__main__':
     database = client.bgg
     #collection for stats variables to go in
     ratings_coll = database.game_ratings
-    mongo_games = ratings_coll.distinct("games")
+    mongo_games = ratings_coll.distinct("game")
     print("the current number of games in the database is", len(mongo_games))
 
     '''This range identifies the games that will be databased from the #id_game_lst. x[0] is the game id in id_game_lst. The index of id_game_lst will select that range of games that will be updated in the database'''
-    call_id_lst = [x[0] for x in id_game_lst[995:1000]]
-    get_ratings_comments_results(ratings_coll)
+    call_id_lst = [x[0] for x in id_game_lst[:1000]]
+    new_entry, old_entry = get_ratings_comments_results(ratings_coll)
