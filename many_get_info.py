@@ -238,14 +238,16 @@ if __name__ == '__main__':
     note an error is thrown if only one game is in the list
     one_get_info.py is for this purpose
     '''
+    print(id_game_lst[:5])
 
     i_one = 0
     i_two = 100
     call_id_lst = []
-    for r in range(145):
+    for r in range(1):
         call_id_lst.append([x[0] for x in id_game_lst[i_one:i_two]])
         i_one += 100
         i_two += 100
-
+    print(call_id_lst)
     stat_results = get_stats_results()
-    get_stats(id_game_dict, stat_results)
+    print(stat_results[0])
+    # get_stats(id_game_dict, stat_results)

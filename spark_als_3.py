@@ -40,13 +40,13 @@ def csv_to_rdd_df():
     # ugr_df.show(10)
     return ugr_df
 
-def mongo_to_df():
-    df = spark.read.format("com.mongodb.spark.sql.DefaultSource").option("spark.mongodb.input.uri", "mongodb://127.0.0.1/bgg.game_comments").load()
-    ugr_data = df.select('user_id','game_id','rating').repartition(16).cache()
-    ugr_df = ugr_data.filter("rating is not null")
-    # ugr_rdd = ugr_df.rdd
-    ugr_df = ugr_df.withColumn("game_id", ugr_df["game_id"].cast("int"))
-    return ugr_df
+# def mongo_to_df():
+#     df = spark.read.format("com.mongodb.spark.sql.DefaultSource").option("spark.mongodb.input.uri", "mongodb://127.0.0.1/bgg.game_comments").load()
+#     ugr_data = df.select('user_id','game_id','rating').repartition(16).cache()
+#     ugr_df = ugr_data.filter("rating is not null")
+#     # ugr_rdd = ugr_df.rdd
+#     ugr_df = ugr_df.withColumn("game_id", ugr_df["game_id"].cast("int"))
+#     return ugr_df
 
 def train_val_test_df(ugr_df):
     (df_train, df_val, df_test) = ugr_df.randomSplit([0.6, 0.2, 0.2], seed=34)
@@ -81,9 +81,7 @@ def predict_test_df(df_train, df_val, evaluator):
                   alpha=5,
                   checkpointInterval=10,
                   userCol="user_id", itemCol="game_id", seed=1, ratingCol="rating")
-        print(als)
         model=als.fit(df_train)
-        print("still no problems here")
         validationRmse = computeRmse(model, df_val, evaluator)
         print("RMSE (validation) = {} for the model trained with rank: {}, lambda: {}, numIter: {} ".format(validationRmse, rank, lmbda, numIter))
         if (validationRmse < bestValidationRmse):
@@ -97,24 +95,24 @@ def predict_test_df(df_train, df_val, evaluator):
     optimized_model = bestModel
     return optimized_model
 
-def df_predict_on_test(df_test, optimized_model):
-    #optimized hyperparemeters from predict_test_df
-    seed = 1
-    rank = 5
-    numIter = 200
-    lmbda = 0.2
-
-    predictions = optimized_model.transform(df_test)
-    print(predictions.count())
-    print(predictions.take(3))
-    predictions_drop = predictions.dropna()
-    print(predictions_drop.count())
-    print(predictions_drop.take(10))
-    evaluator = RegressionEvaluator(metricName="rmse", labelCol="rating", predictionCol="prediction")
-    rmse = evaluator.evaluate(predictions_drop)
-    print(rmse)
-    print('RMSE for test data: {}'.format(rmse))
-    return predictions
+# def df_predict_on_test(df_test, optimized_model):
+#     #optimized hyperparemeters from predict_test_df
+#     seed = 1
+#     rank = 5
+#     numIter = 200
+#     lmbda = 0.2
+#
+#     predictions = optimized_model.transform(df_test)
+#     print(predictions.count())
+#     print(predictions.take(3))
+#     predictions_drop = predictions.dropna()
+#     print(predictions_drop.count())
+#     print(predictions_drop.take(10))
+#     evaluator = RegressionEvaluator(metricName="rmse", labelCol="rating", predictionCol="prediction")
+#     rmse = evaluator.evaluate(predictions_drop)
+#     print(rmse)
+#     print('RMSE for test data: {}'.format(rmse))
+#     return predictions
 
 def to_user_unrated_df(ugr_df, username="jomonsugi"):
     client = MongoClient()
@@ -157,15 +155,16 @@ def to_user_unrated_df(ugr_df, username="jomonsugi"):
     return unrated_df
 
 def predict_one_user(user_unrated_df, optimized_model):
-    #optimized hyperparemeters from predict_test_df
-    seed = 1
+    '''
+    optimized hyperparemeters from predict_test_df
     rank = 5
-    numIter = 200
+    numIter = 20
     lmbda = 0.2
+    '''
 
     one_user_predictions = optimized_model.transform(user_unrated_df)
     print('TYPE:', type(one_user_predictions))
-    sorted_predictions = one_user_predictions.sort("rating")
+    sorted_predictions = one_user_predictions.select(['user_id', 'game_id', 'prediction']).sort(F.desc('prediction'))
     return sorted_predictions
 
 def un_pickle_user_dict():
@@ -215,25 +214,24 @@ def un_pickle_labeled_df():
 
 def one_user_to_pd(nmf_labeled_df, one_user_predictions):
     one_user_df = one_user_predictions.toPandas()
-    one_user_df = one_user_df.sort(columns='prediction', ascending=False)
-    one_user_df = one_user_df.drop('rating', 1)
     frames = [one_user_df, nmf_labeled_df]
     one_user_df = pd.concat(frames)
     return one_user_df
 
 if __name__ == '__main__':
     ugr_df = csv_to_rdd_df()
-    # df_train, df_val, df_test = train_val_test_df(ugr_df)
-    # evaluator = make_evaluator()
-    # optimized_model = predict_test_df(df_train, df_val, evaluator)
-    # optimized_model.save("/Users/micahshanks/Galvanize/capstone/data/als_model_test3")
+    df_train, df_val, df_test = train_val_test_df(ugr_df)
+    evaluator = make_evaluator()
+    optimized_model = predict_test_df(df_train, df_val, evaluator)
+    optimized_model.save("/Users/micahshanks/Galvanize/capstone/data/als_model_test4")
     # df_predict_on_test(df_test, optimized_model)
-    # optimized_model = ALSModel.load("/Users/micahshanks/Galvanize/capstone/data/als_model_test3")
+    optimized_model = ALSModel.load("/Users/micahshanks/Galvanize/capstone/data/als_model_test4")
 
     # # _, user = argv
     # # now on to one user predictions
     user_unrated_df = to_user_unrated_df(ugr_df, username='RomyCat')
-    # one_user_predictions = predict_one_user(user_unrated_df, optimized_model)
+    one_user_predictions = predict_one_user(user_unrated_df, optimized_model)
+    one_user_predictions.show()
     #
     # # and for all users to df
     # # note: this should not be done locally as it will take

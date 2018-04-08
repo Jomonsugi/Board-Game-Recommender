@@ -13,6 +13,10 @@
 
 5. Discovered the UI! While job is running check out: http://localhost:4040/jobs/
 
-6. Got the checkpointInterval working. I set to 10, maybe 20 would work, but allows for more iterations. Did 200 with no issue.
 
-7. Only using df (not rdd) in the function ```to_user_unrated_df```, simplified the function as well 
+# 2018-03-17
+Only using df (not rdd) in the function ```to_user_unrated_df```, simplified the function as well
+
+Predicting new model and outputting results for one user, could just use saved model as well. Next step is working on updating database.
+
+Got checkpointInterval working
