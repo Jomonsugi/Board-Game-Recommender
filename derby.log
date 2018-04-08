@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Oct 02 22:44:30 MDT 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-015e-e08c-b15a-0000105c5100 
+on database directory /Users/micahshanks/Board-Game-Recommender/metastore_db with class loader org.apache.spark.sql.hive.client.IsolatedClientLoader$$anon$1@33761fb1 
+Loaded from file:/usr/local/Cellar/apache-spark/2.2.0/libexec/jars/derby-10.12.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_131-b11
+user.dir=/Users/micahshanks/Board-Game-Recommender
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.12.5
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
