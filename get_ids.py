@@ -6,6 +6,8 @@ import numpy as np
 import datetime
 import pickle
 
+#testing
+
 #each page has 100 games on it (other than the last page)
 def get_game_ids(games=100):
 
