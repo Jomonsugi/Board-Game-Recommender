@@ -12,22 +12,33 @@ stat_results=[]
 def get_stats_results():
     count = 1
     for current_call_lst in call_id_lst:
-        time.sleep(np.random.choice(random_sec))
-        print(count)
-        print(current_call_lst[0], current_call_lst[-1])
+        # time.sleep(np.random.choice(random_sec))
+        print(current_call_lst)
         stat_results.append(conn.boardgame(current_call_lst, stats=True))
         count += 1
+    # print(stat_results)
     return stat_results
 
 def get_stats(id_game_dict, stat_results):
-    count = 100
+    count = 2
+    print("length of stat_results", len(stat_results))
     for current_stat_results in stat_results:
         print(count)
         for current_game_stats in current_stat_results['items']['item']:
+            print("THIS IS A NEW ONE")
+            print(type(current_game_stats))
+            print("")
+            print("")
+            print("")
+            print(current_game_stats)
             # get id
             game_id = current_game_stats['id']
+            print(type(game_id))
+            print("this is the game id", game_id)
+            print("here is the id_game_dict", id_game_dict)
             # get game
-            game = id_game_dict.get(game_id)
+            game = id_game_dict.get(int(game_id))
+            print("this is the game extracted", game)
             #get image link
             try:
                 image = current_game_stats['image']['TEXT']
@@ -118,11 +129,14 @@ def get_stats(id_game_dict, stat_results):
             #year published
             year_published = int(current_game_stats['yearpublished']['value'])
 
-            # print("game:", game)
-            # print("game_id:", game_id)
+            print("")
+            print("")
+            print("HERE IS THE METADATA WE GOT")
+            print("game:", game)
+            print("game_id:", game_id)
             # print("description:", description)
-            # print("categories:", categories)
-            # print("mechanics:" ,mechanics)
+            print("categories:", categories)
+            print("mechanics:" , mechanics)
             # print("kickstarter:", kickstarter)
             # print("designer:", designer)
             # print("min_players:", min_players)
@@ -151,10 +165,10 @@ def get_stats(id_game_dict, stat_results):
             '''
             # print(game_id)
 
-            stats_to_mongo(stats_coll, game, game_id, description, categories, mechanics, kickstarter, designer, min_players, max_players, min_playtime, playing_time, min_age, best_num_players, bnp_total_votes, avg_rating, bayesavg_rating, avg_weight, num_comments, num_weights, rankings, users_rated, year_published)
+            # stats_to_mongo(stats_coll, game, game_id, description, categories, mechanics, kickstarter, designer, min_players, max_players, min_playtime, playing_time, min_age, best_num_players, bnp_total_votes, avg_rating, bayesavg_rating, avg_weight, num_comments, num_weights, rankings, users_rated, year_published)
 
-        count += 100
-
+        count += 2
+        return id_game_dict
 
 def stats_to_mongo(stats_coll, game, game_id, description, categories, mechanics, kickstarter, designer, min_players, max_players, min_playtime, playing_time, min_age, best_num_players, bnp_total_votes, avg_rating, bayesavg_rating, avg_weight, num_comments, num_weights, rankings, users_rated, year_published):
 
@@ -216,16 +230,11 @@ def stats_to_mongo(stats_coll, game, game_id, description, categories, mechanics
 
 if __name__ == '__main__':
     random_sec = np.random.uniform(5,7,[1000,])
-    #open pickle file with ids,games,rating for use
-    with open('data/official_game_dict_p2.pkl','rb') as fp:
-        id_game_dict = pickle.load(fp)
-    with open('data/game_ids_170516.pkl','rb') as fp:
-        id_game_lst = pickle.load(fp)
-    #make id,game key,value pair dictionary
-    #was using a list here from get_ids.py, but now using updated dictionary
-    #from get_official_names.py
-    #id_game_dict = {x[0] : x[1] for x in id_game_lst[:-1]}
 
+    with open('data/game_ids/2018_04_07.pkl','rb') as fp:
+        id_game_lst = pickle.load(fp)
+    id_game_dict = {x[0]: x[1] for x in id_game_lst}
+    # print("id_game_dict", id_game_dict)
     client = MongoClient()
     #set database that collection is in
     database = client.bgg
@@ -238,10 +247,16 @@ if __name__ == '__main__':
     note an error is thrown if only one game is in the list
     one_get_info.py is for this purpose
     '''
-    print(id_game_lst[:5])
+    print(id_game_lst[:2])
 
+    """
+    Here, we take a game list loaded from the latest pull of get_ids.py
+    When making API calls, a list of 100 game ids max can be called. Thus, we make a list of list, each list containing 100 game ids. `get_stats_results` then returns a list of list, each list containing a 'libbgg.infodict.InfoDict' in place of each id given. `get_stats` extracts metadata from each InfoDict, assigning data to variables, which are then written into the mongo_db database.
+
+    This process is burdensome and the code needs to be completely refactored. The if_name_main block should only contain calls to the functions, not variable assignment. The length of the id_game_lst should be checked and then API calls should be made based on that list length unless otherwise stated.
+    """
     i_one = 0
-    i_two = 100
+    i_two = 2
     call_id_lst = []
     for r in range(1):
         call_id_lst.append([x[0] for x in id_game_lst[i_one:i_two]])
@@ -249,5 +264,5 @@ if __name__ == '__main__':
         i_two += 100
     print(call_id_lst)
     stat_results = get_stats_results()
-    print(stat_results[0])
-    # get_stats(id_game_dict, stat_results)
+    # print(stat_results)
+    get_stats(id_game_dict, stat_results)

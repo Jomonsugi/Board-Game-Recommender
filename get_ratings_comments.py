@@ -33,7 +33,7 @@ Args:
     collection (mongo db collection name): defaults to "game_comments_test"
 '''
 
-def get_ratings_comments_results(game_id_list_path, error_path, start_game=0, start_page=1, num_games=1000, database="bbg_test", collection="game_comments_test"):
+def get_ratings_comments_results(game_id_list_path, error_path, start_game=0, start_page=1, num_games=1000, database="bgg_test", collection="game_comments_test"):
     error_lst = []
 
     conn = BGG()
@@ -46,6 +46,7 @@ def get_ratings_comments_results(game_id_list_path, error_path, start_game=0, st
     database = "client.{}".format(database)
     #collection for stats variables to go in
     comments_coll = "database.{}".format(collection)
+    print(comments_coll)
 
     id_game_dict = {x[0] : x[1] for x in id_game_lst[:-1]}
     #reverse lookup for dictionary
@@ -71,9 +72,11 @@ def get_ratings_comments_results(game_id_list_path, error_path, start_game=0, st
                 #print(comment_results)
                 try:
                     comments = comment_results['items']['item']['comments']['comment']
-                    #print("comments:" ,comments)
-                    #print("length:",len(comments))
+                    # print("comments:" ,comments)
+                    print("length:",len(comments))
                     for entry in comments:
+                        print(len(comments))
+                        print(entry)
                         try:
                             rating = float(entry.get('rating'))
                         except ValueError:
@@ -85,7 +88,7 @@ def get_ratings_comments_results(game_id_list_path, error_path, start_game=0, st
                                         "comment": entry.get('value')
                                             })
                     page += 1
-                    time.sleep(np.random.choice(random_sec))
+                    #time.sleep(np.random.choice(random_sec))
                 except KeyError:
                     #print("no comments")
                     page = None
