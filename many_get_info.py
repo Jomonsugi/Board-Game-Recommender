@@ -8,16 +8,44 @@ import numpy as np
 import time
 
 
-stat_results=[]
-def get_stats_results():
-    count = 1
-    for current_call_lst in call_id_lst:
-        # time.sleep(np.random.choice(random_sec))
-        print(current_call_lst)
-        stat_results.append(conn.boardgame(current_call_lst, stats=True))
-        count += 1
-    # print(stat_results)
-    return stat_results
+class BGGMetaData(object):
+
+    def __init__(self, random_sec, collection)
+        self.random_sec = np.random.uniform(5,7,[1000,])
+        self.collection = MongoClient().bgg.game_stats
+
+    def load_game_id_list(game_id_data_path):
+        with open(game_id_data_path,'rb') as fp:
+            id_game_lst = pickle.load(fp)
+        return id_game_lst
+
+    def get_game_dict(id_game_lst)
+        id_game_dict = {x[0]: x[1] for x in id_game_lst}
+        return id_game_dict
+
+    def get_call_id_list(id_game_lst, n_games)
+        call_id_lst = []
+
+        i_one = 0
+        i_two = n_games if n_games < 100 else 100
+
+        for r in range((math.ceil(n_games/100)):
+            call_id_lst.append([x[0] for x in id_game_lst[i_one:i_two]])
+            i_one += 100
+            i_two += 100
+
+        return call_id_lst
+
+    def get_stats_results():
+        stat_results=[]
+        count = 1
+        for current_call_lst in call_id_lst:
+            time.sleep(np.random.choice(random_sec))
+            print(current_call_lst)
+            stat_results.append(BGG.boardgame(current_call_lst, stats=True))
+            count += 1
+        # print(stat_results)
+        return stat_results
 
 def get_stats(id_game_dict, stat_results):
     count = 2
@@ -228,26 +256,11 @@ def stats_to_mongo(stats_coll, game, game_id, description, categories, mechanics
                      {'$set' : {rankings[0]: int(rankings[2])}})
 
 
-if __name__ == '__main__':
-    random_sec = np.random.uniform(5,7,[1000,])
-
-    with open('data/game_ids/2018_04_07.pkl','rb') as fp:
-        id_game_lst = pickle.load(fp)
-    id_game_dict = {x[0]: x[1] for x in id_game_lst}
-    # print("id_game_dict", id_game_dict)
-    client = MongoClient()
-    #set database that collection is in
-    database = client.bgg
-    #collection for stats variables to go in
-    stats_coll = database.game_stats
-    #making call to api for dictionary object
-    conn = BGG()
     '''
     the index in the id_game_lst specified here will determine how many games are looped through
     note an error is thrown if only one game is in the list
     one_get_info.py is for this purpose
     '''
-    print(id_game_lst[:2])
 
     """
     Here, we take a game list loaded from the latest pull of get_ids.py
@@ -255,14 +268,3 @@ if __name__ == '__main__':
 
     This process is burdensome and the code needs to be completely refactored. The if_name_main block should only contain calls to the functions, not variable assignment. The length of the id_game_lst should be checked and then API calls should be made based on that list length unless otherwise stated.
     """
-    i_one = 0
-    i_two = 2
-    call_id_lst = []
-    for r in range(1):
-        call_id_lst.append([x[0] for x in id_game_lst[i_one:i_two]])
-        i_one += 100
-        i_two += 100
-    print(call_id_lst)
-    stat_results = get_stats_results()
-    # print(stat_results)
-    get_stats(id_game_dict, stat_results)
