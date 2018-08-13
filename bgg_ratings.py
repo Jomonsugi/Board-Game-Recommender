@@ -11,12 +11,12 @@ from collections import defaultdict
 '''
 Inserts a record for each user's rating of a game in the specified collection with the following format:
 
-{"game": current_game,
-                "game_id": bgg game id,
-                "username": bgg username,
-                "rating": users game rating,
-                "comment": users comment on game
-                    }
+    {"game": current_game,
+    "game_id": bgg game id,
+    "username": bgg username,
+    "rating": users game rating,
+    "comment": users comment on game
+    }
 
 Args:
     game_id_list_path (relative path):
@@ -33,7 +33,7 @@ Args:
     collection (mongo db collection name): defaults to "game_comments_test"
 '''
 
-def get_ratings_comments_results(game_id_list_path, error_path, start_game=0, start_page=1, num_games=1000, database="bgg_test", collection="game_comments_test"):
+def insert_rating_record(game_id_list_path, error_path, start_game=0, start_page=1, num_games=1000, database="bgg_test", collection="game_comments_test"):
     error_lst = []
 
     conn = BGG()

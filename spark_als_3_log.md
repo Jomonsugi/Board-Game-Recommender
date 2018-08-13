@@ -11,7 +11,7 @@
 ```TypeError: Invalid param value given for param "alpha". Could not convert [0.5] to float
 ```
 
-5. Discovered the UI! While job is running check out: http://localhost:4040/jobs/
+5. While job is running check out: http://localhost:4040/jobs/
 
 
 # 2018-03-17

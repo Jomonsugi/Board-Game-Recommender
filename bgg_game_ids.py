@@ -6,7 +6,7 @@ import numpy as np
 import datetime
 import pickle
 
-#each page has 100 games on it (other than the last page)
+# each page has 100 games on it (other than the last page)
 def get_game_ids(games=100, pickle=False):
 
     '''
@@ -19,7 +19,7 @@ def get_game_ids(games=100, pickle=False):
         Must be a multiple of 100. If not, the next lowest number divisible by 100 is used. For example if 962 is passed, that will result in 900 games being returned in the list.
     '''
     if games < 100:
-        print("Specified number of games must be a multiple of 100.")
+        print("Specified number of games should be a multiple of 100.")
     if games/100 != 1:
         print("Warning: You have specified a number of games that is not a multiple of 100. {} games will be added to list.".format(int(games/100)*100))
 
